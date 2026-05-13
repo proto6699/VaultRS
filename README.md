@@ -1,3 +1,5 @@
+<img width="2155" height="1440" alt="repoexaple2" src="https://github.com/user-attachments/assets/f55abbaf-8d13-4e95-820f-2ab40cf6df7a" />
+<img width="2155" height="1436" alt="repoexamole1" src="https://github.com/user-attachments/assets/3b485904-a904-404f-b8e8-d2a25fdde169" />
 # FoxVault 🦊
 
 > *"your hopefully safe password den"*
