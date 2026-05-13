@@ -1,10 +1,13 @@
-<img width="2155" height="1440" alt="repoexaple2" src="https://github.com/user-attachments/assets/f55abbaf-8d13-4e95-820f-2ab40cf6df7a" />
-<img width="2155" height="1436" alt="repoexamole1" src="https://github.com/user-attachments/assets/3b485904-a904-404f-b8e8-d2a25fdde169" />
+
 # FoxVault 🦊
 
 > *"your hopefully safe password den"*
 
 A secure, self-hosted password manager built with Rust. Stores your passwords encrypted at rest, themed after a certain sleepy pixel fox.
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/3b485904-a904-404f-b8e8-d2a25fdde169" width="420"/>
+  <img src="https://github.com/user-attachments/assets/f55abbaf-8d13-4e95-820f-2ab40cf6df7a" width="420"/>
+</p>
 
 ![Rust](https://img.shields.io/badge/Rust-2021-orange?style=flat&logo=rust)
 ![SQLite](https://img.shields.io/badge/Database-SQLite-blue?style=flat)
