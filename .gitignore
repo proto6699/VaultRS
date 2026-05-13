@@ -1,0 +1,6 @@
+.env
+vault.db
+target/
+*.db
+*.db-shm
+*.db-wal

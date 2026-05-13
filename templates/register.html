@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="min-h-screen flex items-center justify-center bg-parch">
+  <div class="w-full max-w-md px-4">
+
+    <!-- logo -->
+    <div class="text-center mb-8">
+      <img
+        src="/static/fox.webp"
+        alt="FoxVault fox"
+        class="w-28 h-28 mx-auto mb-4"
+        style="image-rendering: pixelated;"
+      />
+      <h1 class="text-4xl font-cinzel font-bold text-ink tracking-widest">FOXVAULT</h1>
+      <p class="text-stone font-mono text-xs mt-2 tracking-widest">~ dig your den ~</p>
+    </div>
+
+    <!-- card -->
+    <div class="bg-cream gold-border rounded-lg p-8 shadow-lg">
+      <h2 class="text-base font-cinzel font-bold text-ink tracking-wider mb-6 text-center">
+        CREATE YOUR DEN
+      </h2>
+
+      {% if error %}
+      <div class="bg-red/10 border border-red/30 text-red font-mono text-xs rounded p-3 mb-4">
+        🦊 {{ error }}
+      </div>
+      {% endif %}
+
+      <form method="POST" action="/register" class="space-y-5">
+        <div>
+          <label class="block font-mono text-xs text-stone tracking-widest mb-1">USERNAME</label>
+          <input
+            type="text" name="username" required autofocus
+            class="w-full bg-parch gold-border rounded px-4 py-2 font-mono text-sm text-ink focus:outline-none focus:border-fox"
+          />
+        </div>
+        <div>
+          <label class="block font-mono text-xs text-stone tracking-widest mb-1">MASTER PASSWORD</label>
+          <input
+            type="password" name="password" required
+            class="w-full bg-parch gold-border rounded px-4 py-2 font-mono text-sm text-ink focus:outline-none focus:border-fox"
+          />
+          <p class="font-mono text-xs text-stone mt-1">
+            this protects everything — make it strong
+          </p>
+        </div>
+        <button
+          type="submit"
+          class="w-full bg-forest hover:bg-forest2 text-goldlt font-cinzel font-bold tracking-widest py-2 rounded border border-forestlt transition-colors"
+        >
+          DIG MY DEN
+        </button>
+      </form>
+
+      <div class="pattern-divider my-6 rounded"></div>
+
+      <p class="text-center font-mono text-xs text-stone">
+        already have a den?
+        <a href="/login" class="text-fox hover:text-foxdark underline">sneak back in</a>
+      </p>
+    </div>
+
+  </div>
+</div>
+
+{% endblock %}
+

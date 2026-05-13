@@ -1,0 +1,315 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="min-h-screen flex flex-col">
+
+  <!-- TOP NAV -->
+  <nav class="bg-ink border-b-2 border-gold px-6 py-3 flex items-center justify-between">
+    <div class="flex items-center gap-4">
+      <img src="/static/fox.webp" alt="fox" class="w-10 h-10" style="image-rendering:pixelated;"/>
+      <div>
+        <div class="text-goldlt font-cinzel font-bold text-lg tracking-widest">FOXVAULT</div>
+        <div class="text-stone font-mono text-xs tracking-widest">~ your sneaky little password den ~</div>
+      </div>
+    </div>
+    <div class="flex items-center gap-3">
+      <span class="font-mono text-xs text-stonelt bg-ink2 px-3 py-1 rounded border border-stone">
+        🦊 {{ username }}
+      </span>
+      <form method="POST" action="/logout">
+        <button class="font-mono text-xs text-red border border-red/30 px-3 py-1 rounded hover:bg-red/10 transition-colors">
+          leave den
+        </button>
+      </form>
+    </div>
+  </nav>
+
+  <!-- GOLD DIVIDER -->
+  <div class="pattern-divider"></div>
+
+  <!-- MAIN LAYOUT -->
+  <div class="flex flex-1">
+
+    <!-- SIDEBAR -->
+    <aside class="w-52 bg-ink2 border-r-2 border-gold flex flex-col py-4 px-2 gap-1 shrink-0">
+
+      <div class="font-mono text-xs text-stone tracking-widest px-3 py-2">— vault —</div>
+      <a href="/vault" class="flex items-center gap-2 px-3 py-2 rounded font-mono text-xs text-goldlt bg-gold/20 border-l-2 border-gold">
+        <i class="ti ti-layout-grid text-base"></i> All entries
+        <span class="ml-auto text-gold text-xs">{{ entry_count }}</span>
+      </a>
+
+      <div class="font-mono text-xs text-stone tracking-widest px-3 py-2 mt-2">— tools —</div>
+      <button
+        onclick="document.getElementById('generator').scrollIntoView({behavior:'smooth'})"
+        class="flex items-center gap-2 px-3 py-2 rounded font-mono text-xs text-stonelt hover:text-goldlt hover:bg-gold/10 transition-colors">
+        <i class="ti ti-wand text-base"></i> Generator
+      </button>
+
+      <!-- fox quote -->
+      <div class="mt-auto px-3 py-4 border-t border-gold/20 font-mono text-xs text-stone italic leading-relaxed">
+        <span class="text-fox not-italic"></span><br/>
+        "a fox never reveals its passwords...<br/>or does it"
+      </div>
+
+    </aside>
+
+    <!-- CONTENT -->
+    <main class="flex-1 bg-parch p-6 flex flex-col gap-6 overflow-y-auto">
+
+      <!-- SEARCH + ADD -->
+      <div class="flex gap-3 items-center">
+        <div class="flex-1 bg-cream gold-border rounded flex items-center gap-3 px-4 py-2">
+          <i class="ti ti-search text-stone"></i>
+          <input
+            type="text"
+            placeholder="sniff out an entry..."
+            class="flex-1 bg-transparent font-mono text-sm text-ink placeholder-stone focus:outline-none"
+            hx-get="/vault/search"
+            hx-trigger="keyup changed delay:300ms"
+            hx-target="#entry-list"
+            name="q"
+          />
+        </div>
+        <button
+          onclick="document.getElementById('add-form').classList.toggle('hidden')"
+          class="bg-forest hover:bg-forest2 text-goldlt font-cinzel font-bold text-xs tracking-widest px-4 py-2 rounded border border-forestlt transition-colors flex items-center gap-2">
+          <i class="ti ti-plus"></i> New Entry
+        </button>
+      </div>
+
+      <!-- ADD ENTRY FORM (hidden by default) -->
+      <div id="add-form" class="hidden bg-cream gold-border rounded-lg p-6">
+        <h3 class="font-cinzel font-bold text-ink tracking-wider mb-4 text-sm">STASH A NEW SECRET</h3>
+        <form method="POST" action="/vault/add" class="grid grid-cols-1 gap-4">
+          <div>
+            <label class="block font-mono text-xs text-stone tracking-widest mb-1">SITE / SERVICE</label>
+            <input type="text" name="site" required placeholder="github.com"
+              class="w-full bg-parch gold-border rounded px-4 py-2 font-mono text-sm text-ink focus:outline-none focus:border-fox"/>
+          </div>
+          <div>
+            <label class="block font-mono text-xs text-stone tracking-widest mb-1">USERNAME / EMAIL</label>
+            <input type="text" name="username" required placeholder="you@example.com"
+              class="w-full bg-parch gold-border rounded px-4 py-2 font-mono text-sm text-ink focus:outline-none focus:border-fox"/>
+          </div>
+          <div>
+            <label class="block font-mono text-xs text-stone tracking-widest mb-1">PASSWORD</label>
+            <div class="flex gap-2">
+              <input type="text" name="password" id="new-password" required placeholder="super secret"
+                class="flex-1 bg-parch gold-border rounded px-4 py-2 font-mono text-sm text-ink focus:outline-none focus:border-fox"/>
+              <button type="button" onclick="generateIntoField()"
+                class="bg-ink2 hover:bg-ink text-goldlt font-mono text-xs px-3 py-2 rounded border border-gold/30 transition-colors">
+                generate
+              </button>
+            </div>
+          </div>
+          <div class="flex gap-3 pt-2">
+            <button type="submit"
+              class="bg-forest hover:bg-forest2 text-goldlt font-cinzel font-bold text-xs tracking-widest px-6 py-2 rounded border border-forestlt transition-colors">
+              STASH IT
+            </button>
+            <button type="button" onclick="document.getElementById('add-form').classList.add('hidden')"
+              class="font-mono text-xs text-stone hover:text-ink px-4 py-2 rounded border border-stone/30 transition-colors">
+              cancel
+            </button>
+          </div>
+        </form>
+      </div>
+
+      <!-- SECTION LABEL -->
+      <div class="flex items-center gap-3 font-mono text-xs text-stone tracking-widest">
+        <div class="flex-1 h-px bg-gold opacity-40"></div>
+        STASHED SECRETS
+        <div class="flex-1 h-px bg-gold opacity-40"></div>
+      </div>
+
+      <!-- ENTRY LIST -->
+      <div id="entry-list" class="flex flex-col gap-3">
+        {% for entry in entries %}
+        <div class="bg-cream gold-border rounded-lg px-5 py-4 flex items-center gap-4">
+          <div class="w-9 h-9 rounded bg-ink2 border border-stone flex items-center justify-center font-cinzel font-bold text-goldlt text-xs shrink-0">
+            {{ entry.site | upper | truncate(2, "") }}
+          </div>
+          <div class="flex-1 min-w-0">
+            <div class="font-cinzel font-bold text-ink text-sm tracking-wide">{{ entry.site }}</div>
+            <div class="font-mono text-xs text-stone mt-0.5">{{ entry.username }}</div>
+            <div class="font-mono text-xs text-stonelt mt-0.5 tracking-widest" id="pw-{{ entry.id }}">• • • • • • • • • •</div>
+          </div>
+          <div class="flex gap-2 shrink-0">
+            <button
+              hx-get="/vault/reveal/{{ entry.id }}"
+              hx-target="#pw-{{ entry.id }}"
+              hx-swap="innerHTML"
+              class="font-mono text-xs text-stone border border-stone/30 px-3 py-1 rounded hover:border-gold hover:text-ink transition-colors flex items-center gap-1">
+              <i class="ti ti-eye text-sm"></i> reveal
+            </button>
+            <button
+              onclick="copyToClipboard('{{ entry.id }}')"
+              class="font-mono text-xs text-stone border border-stone/30 px-3 py-1 rounded hover:border-gold hover:text-ink transition-colors flex items-center gap-1">
+              <i class="ti ti-copy text-sm"></i> copy
+            </button>
+            <form method="POST" action="/vault/delete/{{ entry.id }}" class="inline">
+              <button type="submit"
+                class="font-mono text-xs text-red border border-red/20 px-3 py-1 rounded hover:bg-red/10 transition-colors flex items-center gap-1">
+                <i class="ti ti-trash text-sm"></i>
+              </button>
+            </form>
+          </div>
+        </div>
+        {% else %}
+        <div class="text-center py-16 font-mono text-stone text-sm">
+          <div class="text-4xl mb-4">🦊</div>
+          <div>the den is empty... stash something!</div>
+        </div>
+        {% endfor %}
+      </div>
+
+      <!-- GENERATOR -->
+      <div id="generator" class="bg-ink gold-border rounded-lg p-6 mt-2">
+        <div class="font-cinzel font-bold text-goldlt tracking-wider mb-1 flex items-center gap-2">
+          <i class="ti ti-wand text-fox"></i> THE GENERATOR
+        </div>
+        <div class="font-mono text-xs text-stone italic mb-4" id="gen-quip">
+          "this password was forged in the fires of mount fox and blessed by three chaos gremlins"
+        </div>
+        <div class="bg-ink2 border border-gold/30 rounded px-4 py-3 font-mono text-sm text-goldlt flex items-center justify-between mb-3">
+          <span id="gen-output">click generate to summon a password</span>
+          <button onclick="copyGen()" class="font-mono text-xs text-stone border border-stone/30 px-3 py-1 rounded hover:border-gold transition-colors ml-4 shrink-0">
+            <i class="ti ti-copy"></i> copy
+          </button>
+        </div>
+        <div class="flex items-center gap-3 mb-4">
+          <span class="font-mono text-xs text-stone">length</span>
+          <input type="range" min="12" max="64" value="20" id="gen-length"
+            class="flex-1 accent-fox"/>
+          <span class="font-mono text-xs text-goldlt w-6" id="gen-length-val">20</span>
+        </div>
+        <div class="flex gap-2 flex-wrap mb-4">
+          <button onclick="setMode('random')" id="mode-random"
+            class="mode-btn active-mode font-mono text-xs px-3 py-1 rounded border transition-colors">
+            random chaos
+          </button>
+          <button onclick="setMode('passphrase')" id="mode-passphrase"
+            class="mode-btn font-mono text-xs px-3 py-1 rounded border transition-colors">
+            fox passphrase
+          </button>
+          <button onclick="setMode('pronounceable')" id="mode-pronounceable"
+            class="mode-btn font-mono text-xs px-3 py-1 rounded border transition-colors">
+            pronounceable
+          </button>
+        </div>
+        <button onclick="generate()"
+          class="bg-forest hover:bg-forest2 text-goldlt font-cinzel font-bold text-xs tracking-widest px-6 py-2 rounded border border-forestlt transition-colors">
+          GENERATE
+        </button>
+      </div>
+
+    </main>
+  </div>
+</div>
+
+<style>
+  .mode-btn { color: #A89880; border-color: rgba(122,106,82,0.4); }
+  .active-mode { color: #E8B84B; border-color: #C9952A; background: rgba(201,149,42,0.15); }
+</style>
+
+<script>
+const quips = [
+    "this password was forged in the fires of mount fox and blessed by three chaos gremlins",
+    "a fox tunnelled through 3 firewalls to retrieve this. use it wisely.",
+    "generated by furiously headbanging on the keyboard at 3am",
+    "this password has seen things. terrible things.",
+    "stolen from a dragon's hoard. the dragon is still mad.",
+    "a sleep-deprived fox rolled down a hill and this came out",
+    "certified chaos. 94 bits of pure fox energy.",
+    "even the fox doesn't know what this means",
+    "a raccoon helped. we don't talk about the raccoon.",
+    "this password defeated a final boss and asked for no credit",
+    "cryptographically blessed by the ghost of a mathematician",
+    "your cat walked on the keyboard. we kept it.",
+    "forged at 3am by a fox who had too much coffee and no regrets",
+    "the ancient scrolls predicted this password. the scrolls were right.",
+    "a wizard sneezed. this is what came out.",
+    "tested on 7 gremlins. 6 survived. strength confirmed.",
+    "this password once stared into the void. the void blinked first.",
+    "no foxes were harmed in the making of this password",
+    "scientists have no explanation for this one",
+    "your enemies will cry. your mother will be proud.",
+    "born in chaos, raised in entropy, feared by hackers",
+    "the fox rolled 20 on a d20. critical hit.",
+    "if this password were a person it would have three PhDs and a criminal record",
+    "a sleep-deprived goblin engineered this at 4am on a tuesday",
+    "this password once escaped a government database just for fun",
+    "archaeologists in 3000 AD will find this and weep",
+    "certified unhinged. certified secure. certified fox.",
+    "the forbidden algorithm. the elders warned us.",
+    "it escaped from the lab. we caught it. barely.",
+    "somewhere a hacker just gave up and went home",
+];
+
+  const foxWords = [
+    "swift","burrow","moonpelt","chaos","ember","fang","dusk","shadow",
+    "acorn","bramble","hollow","frost","pebble","crimson","vale","wisp"
+  ];
+
+  let currentMode = 'random';
+  let lastPassword = '';
+
+  function setMode(mode) {
+    currentMode = mode;
+    document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active-mode'));
+    document.getElementById('mode-' + mode).classList.add('active-mode');
+  }
+
+  function randomChar(chars) {
+    return chars[Math.floor(Math.random() * chars.length)];
+  }
+
+  function generate() {
+    const len = parseInt(document.getElementById('gen-length').value);
+    let pw = '';
+
+    if (currentMode === 'random') {
+      const chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()_+-=[]{}';
+      for (let i = 0; i < len; i++) pw += randomChar(chars);
+    } else if (currentMode === 'passphrase') {
+      const words = [];
+      for (let i = 0; i < 4; i++) words.push(foxWords[Math.floor(Math.random() * foxWords.length)]);
+      pw = words.join('-') + '-' + Math.floor(Math.random() * 99);
+    } else {
+      const syllables = ['zov','kri','peth','mal','vor','sin','ael','bru','tox','fen','qua','rix'];
+      let result = '';
+      while (result.length < len) result += syllables[Math.floor(Math.random() * syllables.length)];
+      pw = result.slice(0, len);
+    }
+
+    lastPassword = pw;
+    document.getElementById('gen-output').textContent = pw;
+    document.getElementById('gen-quip').textContent = '"' + quips[Math.floor(Math.random() * quips.length)] + '"';
+  }
+
+  function copyGen() {
+    if (lastPassword) navigator.clipboard.writeText(lastPassword);
+  }
+
+  function generateIntoField() {
+    generate();
+    document.getElementById('new-password').value = lastPassword;
+  }
+
+  function copyToClipboard(id) {
+    const el = document.getElementById('pw-' + id);
+    const text = el.textContent.trim();
+    if (text && text !== '• • • • • • • • • •') {
+      navigator.clipboard.writeText(text);
+    }
+  }
+
+  // length slider display
+  const slider = document.getElementById('gen-length');
+  slider.addEventListener('input', () => {
+    document.getElementById('gen-length-val').textContent = slider.value;
+  });
+</script>
+
+{% endblock %}

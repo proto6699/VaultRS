@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>FoxVault 🦊</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css"/>
+  <script src="https://unpkg.com/htmx.org@1.9.10"></script>
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            ink:      '#2C1A0E',
+            ink2:     '#4A2E1A',
+            parch:    '#F5ECD7',
+            parch2:   '#EDD9A3',
+            cream:    '#FFF8EE',
+            fox:      '#F07B10',
+            foxdark:  '#C45A00',
+            gold:     '#C9952A',
+            goldlt:   '#E8B84B',
+            forest:   '#2D5016',
+            forest2:  '#3D6B1F',
+            forestlt: '#4E8A28',
+            stone:    '#7A6A52',
+            stonelt:  '#A89880',
+            red:      '#8B2000',
+          },
+          fontFamily: {
+            cinzel: ['Cinzel', 'serif'],
+            mono:   ['JetBrains Mono', 'monospace'],
+          }
+        }
+      }
+    }
+  </script>
+
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+
+  <style>
+    body { background: #F5ECD7; }
+    .gold-border { border: 1.5px solid #C9952A; }
+    .pattern-divider {
+      height: 6px;
+      background: repeating-linear-gradient(
+        90deg,
+        #C9952A 0px,  #C9952A 4px,
+        #E8B84B 4px,  #E8B84B 8px,
+        #C9952A 8px,  #C9952A 12px,
+        #F5ECD7 12px, #F5ECD7 16px
+      );
+    }
+  </style>
+</head>
+<body class="min-h-screen font-cinzel">
+  {% block content %}{% endblock %}
+</body>
+</html>
+
