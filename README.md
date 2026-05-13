@@ -1,6 +1,6 @@
 # FoxVault 🦊
 
-> *"your sneaky little password den"*
+> *"your hopefully safe password den"*
 
 A secure, self-hosted password manager built with Rust. Stores your passwords encrypted at rest, themed after a certain sleepy pixel fox.
 
